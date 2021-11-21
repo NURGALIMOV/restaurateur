@@ -30,7 +30,7 @@ public class UserControllerImpl implements UserController {
         Object role = claims.get("role");
         Object uuid = claims.get("uuid");
         if (role.equals(Role.USER.name()) || role.equals(Role.ADMIN.name())) {
-            return userService.toVote(request, (UUID) uuid);
+            return userService.toVote(request, UUID.fromString((String) uuid));
         }
         throw new RuntimeException("Нет доступа");
     }

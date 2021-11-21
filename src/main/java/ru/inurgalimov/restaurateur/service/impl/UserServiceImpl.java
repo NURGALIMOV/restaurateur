@@ -16,9 +16,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,19 +31,28 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UUID toVote(VoteRequest request, UUID userId) {
-        return voteRepository.findByUserId(userId)
+        Optional<VoteEntity> byUserId = voteRepository.findByUserId(userId);
+        UUID result =  byUserId
                 .map(VoteEntity::getCreateDate)
                 .map(dateTime -> LocalDateTime.ofInstant(dateTime, ZoneId.systemDefault()))
                 .map(dateTime -> {
                     LocalDateTime currenDateTime = LocalDateTime.now();
                     if (currenDateTime.toLocalDate().isAfter(dateTime.toLocalDate())) {
-                        return voteRepository.save(voteMapper.toEntity(request, userId)).getUuid();
+                        VoteEntity entity = voteMapper.toEntity(request, userId);
+                        entity.setUuid(byUserId.map(VoteEntity::getUuid).orElse(null));
+                        return voteRepository.save(entity).getUuid();
                     }
                     if (currenDateTime.toLocalTime().isBefore(FIX_TIME)) {
-                        return voteRepository.save(voteMapper.toEntity(request, userId)).getUuid();
+                        VoteEntity entity = voteMapper.toEntity(request, userId);
+                        entity.setUuid(byUserId.map(VoteEntity::getUuid).orElse(null));
+                        return voteRepository.save(entity).getUuid();
                     }
-                    return null;
-                }).orElse(voteRepository.save(voteMapper.toEntity(request, userId)).getUuid());
+                    return UUID.fromString("00000000-0000-0000-0000-000000000000");
+                }).orElse(null);
+        if (Objects.isNull(result)) {
+            return voteRepository.save(voteMapper.toEntity(request, userId)).getUuid();
+        }
+        return result;
     }
 
     @Override

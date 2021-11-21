@@ -9,6 +9,7 @@ import ru.inurgalimov.restaurateur.entity.MenuEntity;
 @Mapper(componentModel = "spring", uses = DishMapper.class)
 public interface MenuMapper {
 
+    @Mapping(target = "id", source = "uuid")
     MenuResponse toDto(MenuEntity entity);
 
     @Mapping(target = "uuid", ignore = true)

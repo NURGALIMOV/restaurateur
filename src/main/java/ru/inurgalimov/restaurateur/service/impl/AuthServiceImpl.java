@@ -43,12 +43,14 @@ public class AuthServiceImpl implements AuthService {
     @Transactional
     public String login(AuthRequest request) {
         UserAccount account = mapper.toDto(repository.findByLogin(request.getLogin().toLowerCase()).orElseThrow(RuntimeException::new));
-        encoder.matches(request.getPassword(), account.getPassword());
-        Map<String, Object> data = Map.of("login", account.getLogin(),
-                "fullName", account.getFullName(),
-                "role", account.getRole(),
-                "uuid", account.getUuid());
-        return jwtTokenProvider.generateToken(request.getLogin(), data);
+        if (encoder.matches(request.getPassword(), account.getPassword())) {
+            Map<String, Object> data = Map.of("login", account.getLogin(),
+                    "fullName", account.getFullName(),
+                    "role", account.getRole(),
+                    "uuid", account.getUuid());
+            return jwtTokenProvider.generateToken(request.getLogin(), data);
+        }
+        throw new RuntimeException();
     }
 
 }
