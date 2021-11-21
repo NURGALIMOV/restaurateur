@@ -1,0 +1,87 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
+
+    <changeSet author="nurgalimov" id="001">
+        <createTable tableName="dish">
+            <column name="uuid" type="uuid">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_dish"/>
+            </column>
+            <column name="menu_id" type="uuid"/>
+            <column name="name" type="text"/>
+            <column name="cost" type="float"/>
+            <column name="create_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="nurgalimov" id="002">
+        <createTable tableName="menu">
+            <column name="uuid" type="uuid">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_menu"/>
+            </column>
+            <column name="restaurant_id" type="uuid"/>
+            <column name="name" type="text"/>
+            <column name="is_actual" type="boolean"/>
+            <column name="create_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="nurgalimov" id="003">
+        <createTable tableName="restaurant">
+            <column name="uuid" type="uuid">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_restaurant"/>
+            </column>
+            <column name="name" type="text"/>
+            <column name="address" type="text"/>
+            <column name="actual_menu_id" type="uuid"/>
+            <column name="create_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+        </createTable>
+        <addForeignKeyConstraint
+                baseTableName="restaurant"
+                baseColumnNames="actual_menu_id"
+                constraintName="fk_restaurant_1"
+                initiallyDeferred="false"
+                referencedTableName="menu"
+                referencedColumnNames="uuid"
+                onDelete="CASCADE"/>
+    </changeSet>
+
+    <changeSet author="nurgalimov" id="004">
+        <createTable tableName="vote">
+            <column name="uuid" type="uuid">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_vote"/>
+            </column>
+            <column name="vote" type="boolean"/>
+            <column name="restaurant_id" type="uuid"/>
+            <column name="menu_id" type="uuid"/>
+            <column name="user_id" type="uuid"/>
+            <column name="create_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="nurgalimov" id="005">
+        <createTable tableName="users">
+            <column name="uuid" type="uuid">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_user"/>
+            </column>
+            <column name="full_name" type="text"/>
+            <column name="login" type="text"/>
+            <column name="password" type="text"/>
+            <column name="role" type="text"/>
+            <column name="create_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+        </createTable>
+    </changeSet>
+
+<!--    <changeSet author="nurgalimov" id="004">-->
+<!--        <addForeignKeyConstraint-->
+<!--                baseTableName="dish"-->
+<!--                baseColumnNames="menu_id"-->
+<!--                constraintName="fk_dish_2"-->
+<!--                initiallyDeferred="false"-->
+<!--                referencedTableName="menu"-->
+<!--                referencedColumnNames="uuid"-->
+<!--                onDelete="CASCADE"/>-->
+<!--    </changeSet>-->
+
+</databaseChangeLog>

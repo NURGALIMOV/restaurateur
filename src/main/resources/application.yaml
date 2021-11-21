@@ -1,0 +1,19 @@
+server:
+  error:
+    include-message: always
+spring:
+  application:
+    name: retaurateur
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/restaurateurdb
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:password}
+  liquibase:
+    change-log: classpath:db/database_changelog.xml
+  jpa:
+    show-sql: true
+
+jwt:
+  secret: peepo
+  expiration:
+    mills: 86400000

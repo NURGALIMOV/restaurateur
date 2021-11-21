@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  restaurateur:
+    build:
+      context: ../
+      dockerfile: Dockerfile
+    restart: on-failure
+    depends_on:
+      - restaurateur-db
+    ports:
+      - "9999:9999"
+    networks:
+      - restaurateur-backend
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+      DB_HOST: restaurateur-db
+      DB_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: password
+
+  restaurateur-db:
+    container_name: restaurateur-db
+    image: postgres
+    restart: on-failure
+    ports:
+      - "5432:5432"
+    networks:
+      - restaurateur-backend
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: restaurateurdb
+
+networks:
+  restaurateur-backend:
+    external:
+      name: restaurateur-backend
